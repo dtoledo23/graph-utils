@@ -17,6 +17,7 @@ type Node struct {
 	id         string
 	properties []string
 	neighbors  []string
+	pointsToMe []string
 }
 
 // New initializes a new graph.
@@ -33,6 +34,7 @@ func NewNode(id string, properties []string) *Node {
 		id:         id,
 		properties: properties,
 		neighbors:  make([]string, 0, 10),
+		pointsToMe: make([]string, 0, 10),
 	}
 }
 
@@ -56,6 +58,7 @@ func (g *Graph) AddEdge(src, dest string) error {
 	}
 
 	g.nodes[src].neighbors = append(g.nodes[src].neighbors, dest)
+	g.nodes[dest].pointsToMe = append(g.nodes[dest].pointsToMe, src)
 
 	return nil
 }

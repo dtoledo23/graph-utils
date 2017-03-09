@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"graphs"
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -25,28 +27,45 @@ func main() {
 		log.Fatal(err)
 	}
 
-	origin := "7270241753"
-
-	dfs, err := graph.DFS(origin)
+	ranks, err := graph.PageRank()
 	if err != nil {
-		log.Fatal("Error doing DFS", err)
+		log.Fatal(err)
 	}
 
-	bfs, err := graph.BFS(origin)
-	if err != nil {
-		log.Fatal("Error doing DFS", err)
+	f, err := os.Create("results.csv")
+	w := bufio.NewWriter(f)
+	avg := float64(0)
+	len := 0
+	for k, v := range ranks {
+		avg += v
+		len++
+		fmt.Println(k, v)
+		w.WriteString(k + ",")
+		w.WriteString(strconv.FormatFloat(v, 'f', 6, 64) + "\n")
 	}
 
-	log.Println("Original graph:")
-	graph.Print()
+	fmt.Println("Average: ", avg/float64(len))
 
-	log.Println("DFS result graph:")
-	dfs.Print()
+	// dfs, err := graph.DFS(origin)
+	// if err != nil {
+	// 	log.Fatal("Error doing DFS", err)
+	// }
 
-	log.Println("BFS result graph:")
-	bfs.Print()
+	// bfs, err := graph.BFS(origin)
+	// if err != nil {
+	// 	log.Fatal("Error doing DFS", err)
+	// }
 
-	graphs.WriteGDF(dfs, "dfs.gdf")
-	graphs.WriteGDF(bfs, "bfs.gdf")
+	// log.Println("Original graph:")
+	// graph.Print()
+
+	// log.Println("DFS result graph:")
+	// dfs.Print()
+
+	// log.Println("BFS result graph:")
+	// bfs.Print()
+
+	// graphs.WriteGDF(dfs, "dfs.gdf")
+	// graphs.WriteGDF(bfs, "bfs.gdf")
 
 }
